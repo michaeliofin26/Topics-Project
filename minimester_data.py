@@ -86,10 +86,15 @@ res = linprog(
 x = res.x.reshape((num_students, num_minis))
 
 assignments = {}
-
+minimester_counts = {}
 for i in range(num_students):
     j = int(np.argmax(x[i]))
-    assignments[i] = j 
+    assignments[i] = j
+    if j in minimester_counts:
+        minimester_counts[j] += 1
+    else:
+        minimester_counts[j] = 1
+     
 
 minimester_dict = {
     0: "5 Museums In 4 Days",
@@ -133,5 +138,5 @@ minimester_dict = {
 for i in range(len(students)):
     print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
 
-
+print(minimester_counts)
 
