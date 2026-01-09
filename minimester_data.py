@@ -13,6 +13,10 @@ twelvers = 128
 num_students= niners + tenners + eleveners + twelvers
 minimesters=list(range(num_minis))
 minimester_popularities=[]
+cap = [num_students // num_minis*3/2] * num_minis
+lcap = [num_students // num_minis*1/2] * num_minis
+
+
 sum = 0
 
 for i in range(num_minis):
@@ -31,8 +35,8 @@ for i in students:
     new_choice = np.random.choice(minimesters,size=10,replace=False,p=minimester_popularities).tolist()
     student_choices.append(new_choice)
 
-
-num_vars = num_students * num_minis
+#add a clearing variable for each minimester
+num_vars = num_students * num_minis + num_minis
 c = np.zeros(num_vars)
 happiness_array = [14, 13, 12, 9, 8, 7, 6, 4, 3, 2]
 # happiness function
@@ -56,7 +60,7 @@ for i in range(num_students):
 A_eq = np.array(A_eq)
 b_eq = np.array(b_eq)
 
-cap = [num_students // num_minis + 1] * num_minis
+
 
 A_ub = []
 b_ub = []
@@ -65,8 +69,11 @@ for j in range(num_minis):
     row = np.zeros(num_vars)
     for i in range(num_students):
         row[i * num_minis + j] = 1
+    row[num_minis*num_students+j] = cap[j]
     A_ub.append(row)
     b_ub.append(cap[j])
+    A_ub.append(-row)
+    b_ub.append(-lcap[j])
 
 A_ub = np.array(A_ub)
 b_ub = np.array(b_ub)
@@ -83,7 +90,8 @@ res = linprog(
     method="highs"
 )
 
-x = res.x.reshape((num_students, num_minis))
+
+x = res.x[:-num_minis].reshape((num_students, num_minis))
 
 assignments = {}
 minimester_counts = {}
@@ -136,7 +144,11 @@ minimester_dict = {
 }
 
 for i in range(len(students)):
+    print(student_choices[i])
+    print(assignments[i])
     print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
 
 print(minimester_counts)
 
+for row in x:
+    print(row)
