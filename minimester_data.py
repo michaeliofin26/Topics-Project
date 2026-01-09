@@ -13,8 +13,8 @@ twelvers = 128
 num_students= niners + tenners + eleveners + twelvers
 minimesters=list(range(num_minis))
 minimester_popularities=[]
-cap = [num_students // num_minis*3/2] * num_minis
-lcap = [num_students // num_minis*1/2] * num_minis
+cap = [num_students // num_minis*1.2] * num_minis
+lcap = [num_students // num_minis*0.7] * num_minis
 
 
 sum = 0
@@ -45,7 +45,10 @@ for i in range(num_students):
 
         happiness = happiness_array[rank]
         idx = i * num_minis + j
-        c[idx] = -happiness 
+        c[idx] = -happiness
+#penalize deleting minimesters: "happiness for teachers"
+for j in range(num_minis):
+    c[num_minis*num_students+j]=100
 
 A_eq = []
 b_eq = []
