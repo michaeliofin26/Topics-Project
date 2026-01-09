@@ -38,7 +38,7 @@ for i in students:
 #add a clearing variable for each minimester
 num_vars = num_students * num_minis + num_minis
 c = np.zeros(num_vars)
-happiness_array = [14, 13, 12, 9, 8, 7, 6, 4, 3, 2]
+happiness_array = [114, 113, 112, 109, 108, 107, 106, 104, 103, 102]
 # happiness function
 for i in range(num_students):
     for rank, j in enumerate(student_choices[i]):
@@ -161,3 +161,4 @@ for i in range(len(students)):
     print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
 
 print(minimester_counts)
+print(len(minimester_counts))
