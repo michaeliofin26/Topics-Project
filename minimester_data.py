@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from scipy.optimize import linprog
+from scipy.optimize import linprog, milp, LinearConstraint, Bounds
 
 
 #list of length 35, has each minimester probability
@@ -78,17 +78,29 @@ for j in range(num_minis):
 A_ub = np.array(A_ub)
 b_ub = np.array(b_ub)
 
-bounds = [(0, 1)] * num_vars
 
-res = linprog(
-    c,
-    A_eq=A_eq,
-    b_eq=b_eq,
-    A_ub=A_ub,
-    b_ub=b_ub,
+# Equality constraints  A_eq x = b_eq
+eq_constraint = LinearConstraint(A_eq, b_eq, b_eq)
+
+# Inequality constraints A_ub x <= b_ub
+ub_constraint = LinearConstraint(A_ub, -np.inf, b_ub)
+
+constraints = [eq_constraint, ub_constraint]
+
+# Tell SciPy which variables are BINARY
+integrality = np.ones(num_vars, dtype=int)
+
+
+bounds = Bounds(0, 1)
+
+
+res = milp(
+    c=c,
+    integrality=integrality,
     bounds=bounds,
-    method="highs"
+    constraints=constraints
 )
+
 
 
 x = res.x[:-num_minis].reshape((num_students, num_minis))
@@ -149,6 +161,3 @@ for i in range(len(students)):
     print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
 
 print(minimester_counts)
-
-for row in x:
-    print(row)
