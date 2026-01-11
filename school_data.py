@@ -8,7 +8,7 @@ minimester_id = dict()
 
 student_choices = []
 
-with open('choices.csv', mode ='r') as file:
+with open('/Users/michaeliofin/Downloads/Topics Project/Topics-Project/choices.csv', mode ='r') as file:
   csvFile = csv.reader(file)
   next(csvFile)#skip a line
 
@@ -31,7 +31,7 @@ num_minis=len(minimester_id)
 
 
 cap = [num_students // num_minis*1.2] * num_minis
-lcap = [num_students // num_minis*0.7] * num_minis
+lcap = [num_students // num_minis*0.8] * num_minis
 
 #add a clearing variable for each minimester
 num_vars = num_students * num_minis + num_minis
@@ -112,12 +112,21 @@ for i in range(num_students):
     j = int(np.argmax(x[i]))
     assignments[i] = j
     minimester_counts[j] += 1
-     
+
+choice_count={1: 0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0}
 
 for i in range(num_students):
     print(student_choices[i])
     print(assignments[i])
-    print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
+    try:
+        print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
+        choice_count[student_choices[i].index(assignments[i]) + 1]+=1
+    except ValueError:
+        print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {11})")
+        choice_count[11]+=1
+
+
 
 print(minimester_counts)
 print(minimester_dict[33])
+print(choice_count)
