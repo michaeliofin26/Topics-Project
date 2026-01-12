@@ -37,6 +37,7 @@ lcap = [num_students // num_minis*0.8] * num_minis
 num_vars = num_students * num_minis + num_minis
 c = np.zeros(num_vars)
 happiness_array = [114, 113, 112, 109, 108, 107, 106, 104, 103, 102]
+senior_happiness = [140, 126, 124, 109, 108, 107, 86, 54, 53, 52]
 # happiness function
 for i in range(num_students):
     for rank, j in enumerate(student_choices[i]):
@@ -44,6 +45,10 @@ for i in range(num_students):
         happiness = happiness_array[rank]
         idx = i * num_minis + j
         c[idx] = -happiness
+
+        if i>num_students*0.75:
+            c[idx] = -senior_happiness[rank]
+
 #penalize deleting minimesters: "happiness for teachers"
 for j in range(num_minis):
     c[num_minis*num_students+j]=200
@@ -115,18 +120,24 @@ for i in range(num_students):
 
 choice_count={1: 0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0}
 
+senior_choice_count = {1: 0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0}
+
 for i in range(num_students):
     print(student_choices[i])
     print(assignments[i])
     try:
         print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {student_choices[i].index(assignments[i]) + 1})")
         choice_count[student_choices[i].index(assignments[i]) + 1]+=1
+        if i>num_students*0.75:
+            senior_choice_count[student_choices[i].index(assignments[i]) + 1]+=1
     except ValueError:
         print(f"Student {i}: assigned to minimester '{minimester_dict[assignments[i]]}' (choice rank: {11})")
         choice_count[11]+=1
+        if i>num_students*0.75:
+            senior_choice_count[student_choices[i].index(assignments[i]) + 1]+=1
 
 
 
-print(minimester_counts)
-print(minimester_dict[33])
-print(choice_count)
+print("number of students in each minimester:", minimester_counts)
+print("overall choice distributions:", choice_count)
+print("senior choice distribution:", senior_choice_count)
